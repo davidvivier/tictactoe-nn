@@ -9,28 +9,58 @@ import time
 # 1 0 1     1
 # 0 1 1     0
 
-list = [ 0, 0, 1]
-#list = sys.argv
+dataset = np.array([[0, 0, 1],
+                    [0, 1, 1],
+                    [1, 0, 1],
+                    [1, 1, 1]])
 
-def sigmoid(x):
+
+expected = np.array([[0, 0, 1, 1]]).T
+
+# deterministe
+np.random.seed(4)
+
+# 3 poids aléatoires entre -1 et 1
+w0 = 2*np.random.random((3,1)) - 1
+
+print('Poids initiaux : \n {}'.format(w0.T))
+
+def sigmoid(x, deriv):
+    if deriv:
+        return x*(1-x)
     return 1/(1+np.exp(-x))
 
-#@timeit
-def neuron(input):
-    weight = [ 3.5, 2, -4]
-    # ponderation
-    sum = 0
-    for i in range(0, len(input)):
-        sum += input[i]*weight[i]
-    result = sigmoid(sum)
-    return result
-
+l0 = dataset
 
 t0 = time.time()
-for k in range(0, 10000):
-    result = neuron(list)
+
+for iter in range(0, 10000):
+
+    global w0
+
+    l0 = dataset
+
+    # ponderation
+    l1 = sigmoid(np.dot(l0, w0), False)
+
+    # correction
+    l1_error = expected - l1
+
+    #if (iter % 1000 == 0):
+    #    print('Erreur : {} \n'.format(l1_error))
+
+    # Màj des poids
+    l1_delta = l1_error * sigmoid(l1, True)
+    w0 += np.dot(l0.T, l1_delta)
+    #print('Poids : \n{}'.format(w0.T))
+
+print('Poids finaux : \n {}'.format(w0.T))
+
 t1 = time.time()
-print(t1 - t0)
-print (result)
+
+print('Temps : {} \n'.format(t1 - t0))
+
+
+
 
 
