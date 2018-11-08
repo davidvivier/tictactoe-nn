@@ -25,6 +25,12 @@ def neuron(input):
     result = sigmoid(sum)
     return result
 
-print(neuron(list))
+
+t0 = time.time()
+for k in range(0, 10000):
+    result = neuron(list)
+t1 = time.time()
+print(t1 - t0)
+print (result)
 
 
